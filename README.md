@@ -8,7 +8,7 @@ A **Level 3 Orange Belt** mini-dApp submission for a blockchain hackathon. A ful
 
 ## 📸 Screenshot
 
-> _Add screenshot here after deployment_
+![Passing Tests Output](./public/test-results.png)
 
 ## 🎬 Demo Video
 

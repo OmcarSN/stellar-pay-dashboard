@@ -4,7 +4,7 @@ A **Level 3 Orange Belt** mini-dApp submission for a blockchain hackathon. A ful
 
 ## 🔗 Live Demo
 
-> **[YOUR_VERCEL_URL]** — Deploy instructions below
+> **[https://stellar-pay-dashboard.vercel.app/](https://stellar-pay-dashboard.vercel.app/)** — Deployed onto Vercel!
 
 ## 📸 Screenshot
 

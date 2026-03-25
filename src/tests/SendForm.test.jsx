@@ -19,12 +19,12 @@ describe('SendForm', () => {
     expect(screen.getByLabelText(/recipient/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/amount/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/memo/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', {name: /send xlm/i})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: /initiate transfer/i})).toBeInTheDocument();
   });
 
   it('submit is disabled when empty', () => {
     render(<SendForm address={VALID_ADDR} network="testnet" />);
-    expect(screen.getByRole('button', {name: /send xlm/i})).toBeDisabled();
+    expect(screen.getByRole('button', {name: /initiate transfer/i})).toBeDisabled();
   });
 
   it('shows validation error for invalid address', async () => {
@@ -39,7 +39,7 @@ describe('SendForm', () => {
 
   it('shows warning when not connected', () => {
     render(<SendForm address={null} network="testnet" />);
-    expect(screen.getByText(/connect your wallet/i)).toBeInTheDocument();
+    expect(screen.getByText(/connect wallet to send/i)).toBeInTheDocument();
   });
 
   it('amount must be positive', async () => {

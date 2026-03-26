@@ -6,9 +6,11 @@ A **Level 3 Orange Belt** mini-dApp submission for a blockchain hackathon. A ful
 
 > **[https://stellar-pay-dashboard.vercel.app/](https://stellar-pay-dashboard.vercel.app/)** — Deployed onto Vercel!
 
-## 📸 Screenshot
+## 📸 Screenshots
 
-Testing and Dashboard screenshots <img width="1920" height="1008" alt="Screenshot 2026-03-25 192749" src="https://github.com/user-attachments/assets/5773c7f5-281c-4b32-bcc3-1dcbee82b494" />
+Testing and Dashboard screenshots
+
+<img width="1920" height="1008" alt="Screenshot 2026-03-25 192749" src="https://github.com/user-attachments/assets/5773c7f5-281c-4b32-bcc3-1dcbee82b494" />
 
 ![Stellar Payment Dashboard App Screenshot](./public/dapp-screenshot.png)
 

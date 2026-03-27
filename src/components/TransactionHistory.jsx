@@ -61,8 +61,9 @@ export const TransactionHistory = ({ address, network }) => {
         ) : (
           <div className="space-y-3">
             {transactions.map((tx, i) => {
-              const isSent = tx.from === address;
-              const counterparty = isSent ? tx.to : tx.from;
+              const isSent = tx.from === address || tx.source_account === address;
+              const isSoroban = tx.type === 'invoke_host_function';
+              const counterparty = isSent ? (tx.to || tx.funder || tx.trustor) : (tx.from || tx.funder || tx.trustor);
               const amt = tx.amount || tx.starting_balance || 0;
 
               return (
@@ -73,16 +74,19 @@ export const TransactionHistory = ({ address, network }) => {
                   rel="noreferrer" 
                   className="group flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-[#0081f1]/30 hover:bg-[#0081f1]/10 transition-all duration-300 hover:scale-[1.01] hover:shadow-xl hover:shadow-[#0081f1]/5 relative overflow-hidden"
                 >
-                  <div className={`absolute left-0 inset-y-0 w-1 ${isSent ? 'bg-rose-500/50' : 'bg-emerald-500/50'} opacity-0 group-hover:opacity-100 transition-opacity`} />
+                  <div className={`absolute left-0 inset-y-0 w-1 ${isSoroban ? 'bg-purple-500/50' : (isSent ? 'bg-rose-500/50' : 'bg-emerald-500/50')} opacity-0 group-hover:opacity-100 transition-opacity`} />
                   
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 text-xl shadow-inner border border-white/5 ${isSent ? 'bg-rose-500/10 text-rose-500' : 'bg-emerald-500/10 text-emerald-400'}`}>
-                    {isSent ? <svg className="w-5 h-5 -rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg> : <svg className="w-5 h-5 opacity-90 rotate-[135deg]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>}
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 text-xl shadow-inner border border-white/5 ${isSoroban ? 'bg-purple-500/10 text-purple-400' : (isSent ? 'bg-rose-500/10 text-rose-500' : 'bg-emerald-500/10 text-emerald-400')}`}>
+                    {isSoroban ? 
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg> :
+                        (isSent ? <svg className="w-5 h-5 -rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg> : <svg className="w-5 h-5 opacity-90 rotate-[135deg]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>)
+                    }
                   </div>
                   
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className={`text-[10px] uppercase font-black tracking-widest px-2 py-0.5 rounded-full ${isSent ? 'text-rose-400 bg-rose-500/10' : 'text-emerald-400 bg-emerald-500/10'}`}>
-                        {isSent ? 'Sent' : 'Received'}
+                      <span className={`text-[10px] uppercase font-black tracking-widest px-2 py-0.5 rounded-full ${isSoroban ? 'text-purple-400 bg-purple-500/10' : (isSent ? 'text-rose-400 bg-rose-500/10' : 'text-emerald-400 bg-emerald-500/10')}`}>
+                        {isSoroban ? 'Smart Contract Call' : (isSent ? 'Sent' : 'Received')}
                       </span>
                       <span className="text-slate-500 text-[11px] font-medium hidden sm:inline-block">
                         • {tx.created_at ? new Date(tx.created_at).toLocaleString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'}) : ''}
@@ -90,13 +94,13 @@ export const TransactionHistory = ({ address, network }) => {
                     </div>
                     
                     <p className="text-slate-400 text-xs font-mono truncate max-w-[200px] sm:max-w-[250px] group-hover:text-slate-300 transition-colors">
-                      {isSent ? 'To: ' : 'From: '}{counterparty ? <span className="font-bold text-slate-300">{counterparty.slice(0,8)}...{counterparty.slice(-6)}</span> : 'Unknown Source'}
+                      {isSoroban ? `H: ${tx.transaction_hash.slice(0, 16)}...` : (isSent ? 'To: ' : 'From: ')}{counterparty ? <span className="font-bold text-slate-300">{counterparty.slice(0,8)}...{counterparty.slice(-6)}</span> : !isSoroban && 'Unknown Source'}
                     </p>
                   </div>
                   
                   <div className="text-left sm:text-right flex-shrink-0">
-                    <p className={`font-black text-base sm:text-lg tracking-tight ${isSent ? 'text-rose-400' : 'text-emerald-400'}`}>
-                      {isSent ? '−' : '+'}{parseFloat(amt).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span className="text-[10px] opacity-70">XLM</span>
+                    <p className={`font-black text-base sm:text-lg tracking-tight ${isSoroban ? 'text-purple-300' : (isSent ? 'text-rose-400' : 'text-emerald-400')}`}>
+                      {amt > 0 ? (isSent ? '−' : '+') : ''}{parseFloat(amt).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span className="text-[10px] opacity-70">XLM</span>
                     </p>
                   </div>
                 </a>

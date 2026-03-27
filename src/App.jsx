@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { WalletConnect } from './components/WalletConnect';
 import { BalanceCard } from './components/BalanceCard';
 import { SendForm } from './components/SendForm';
+import { SplitPaymentForm } from './components/SplitPaymentForm';
 import { TransactionHistory } from './components/TransactionHistory';
 import { NetworkToggle } from './components/NetworkToggle';
 import { Toast, useToast } from './components/Toast';
@@ -37,6 +38,7 @@ function StarField() {
 function App() {
   const [address, setAddress] = useState(() => localStorage.getItem('stellar_wallet_address') || null);
   const [network, setNetwork] = useState('testnet');
+  const [activeTab, setActiveTab] = useState('send'); // 'send' or 'split'
   const { toasts, addToast, removeToast } = useToast();
 
   const handleConnect = useCallback(addr => setAddress(addr), []);
@@ -66,7 +68,7 @@ function App() {
             </div>
             <div>
               <h1 className="text-white font-black tracking-tight text-xl leading-tight">
-                Stellar <span className="font-light opacity-80">Dashboard</span>
+                Stellar <span className="font-light opacity-80 text-transparent bg-clip-text bg-gradient-to-r from-[#0081f1] to-purple-400">Dashboard</span>
               </h1>
             </div>
           </div>
@@ -96,11 +98,36 @@ function App() {
 
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-12">
         {address && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 outline-none">
             <div className="lg:col-span-5 space-y-8 flex flex-col h-full">
               <BalanceCard address={address} network={network} />
-              <div className="flex-1">
-                <SendForm address={address} network={network} onSuccess={handleSuccess} onError={handleError} />
+              <div className="flex-1 flex flex-col">
+                <div className="flex bg-slate-900/40 p-1 rounded-2xl border border-white/5 mb-4 backdrop-blur-xl">
+                    <button 
+                        onClick={() => setActiveTab('send')}
+                        className={`flex-1 py-3 px-4 rounded-xl text-xs font-bold tracking-widest transition-all duration-300 ${activeTab === 'send' ? 'bg-[#0081f1] text-white shadow-lg shadow-[#0081f1]/30' : 'text-slate-400 hover:text-white'}`}
+                    >
+                        TRANSFER
+                    </button>
+                    <button 
+                        onClick={() => setActiveTab('split')}
+                        className={`flex-1 py-3 px-4 rounded-xl text-xs font-bold tracking-widest transition-all duration-300 ${activeTab === 'split' ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30' : 'text-slate-400 hover:text-white'}`}
+                    >
+                        SMART SPLIT
+                    </button>
+                </div>
+                
+                <div className="flex-1 transition-all duration-500 transform">
+                    {activeTab === 'send' ? (
+                        <div className="animate-fade-in h-full">
+                            <SendForm address={address} network={network} onSuccess={handleSuccess} onError={handleError} />
+                        </div>
+                    ) : (
+                        <div className="animate-fade-in h-full">
+                            <SplitPaymentForm address={address} network={network} onSuccess={handleSuccess} onError={handleError} />
+                        </div>
+                    )}
+                </div>
               </div>
             </div>
             <div className="lg:col-span-7 h-full">

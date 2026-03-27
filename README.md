@@ -14,6 +14,9 @@ Testing and Dashboard screenshots
 
 ![Stellar Payment Dashboard App Screenshot](./public/dapp-screenshot.png)
 
+<img width="1920" height="1008" alt="image" src="https://github.com/user-attachments/assets/e5311a0f-2107-4a1d-9c67-e493fa8bc14a" />
+
+
 ## 🎬 Demo Video
 
 > **[https://youtu.be/JLYxES5ZWSM]**
